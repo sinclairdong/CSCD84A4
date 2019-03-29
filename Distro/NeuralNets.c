@@ -62,6 +62,7 @@ int train_1layer_net(double sample[INPUTS],int label,double (*sigmoid)(double in
   *          be able to complete this function.
   ***********************************************************************************************************/
 
+  
   return(0);		// <--- This should return the class for this sample
 }
 
@@ -92,11 +93,24 @@ int classify_1layer(double sample[INPUTS],int label,double (*sigmoid)(double inp
   *          You will need to complete feedforward_1layer(), and logistic() in order to
   *          be able to complete this function.
   ***********************************************************************************************************/
- 
-  return(0);   	// <---	This should return the class for this sample
+  // calculate the output
+  double activations[OUTPUTS];
+  feedforward_1layer(sample, *sigmoid, weights_io, *activations);
+  
+  // find the maximum node
+  double max = activations[0];
+  double maxIndex = 0;
+  for(int i = 1; i < output; i++){
+    if (activation[i] > max){
+      max = activation[i];
+      maxIndex = i;
+    }
+  }
+  
+  return maxIndex;   	// <---	This should return the class for this sample
 }
 
-void feedforward_1layer(double sample[785], double (*sigmoid)(double input), double weights_io[INPUTS][OUTPUTS], double activations[OUTPUTS])
+void feedforward_1layer(double sample[INPUTS], double (*sigmoid)(double input), double weights_io[INPUTS][OUTPUTS], double activations[OUTPUTS])
 {
  /*
   *  This function performs the feedforward pass of the network's computation - it propagates information
@@ -120,6 +134,16 @@ void feedforward_1layer(double sample[785], double (*sigmoid)(double input), dou
    * TO DO: Complete this function. You will need to implement logistic() in order for this to work
    *        with a logistic activation function.
    ******************************************************************************************************/
+  
+  for(int o = 0; o < OUTPUTS; o++){
+    for (int i = 0; i < INPUTS -1; i++){
+      activations[o] += weight[i][o] * sample[i];
+    }
+    
+    // WARNING no SIGMOID_SCALE used
+    activation[o] += sample[INPUTS -1];
+    activation[o] = sigmoid(activation[o]);
+  }
   
 }
 
@@ -302,7 +326,6 @@ void backprop_2layer(double sample[INPUTS],double h_activations[MAX_HIDDEN], dou
 
 double logistic(double input)
 {
- // This function returns the value of the logistic function evaluated on input
- // TO DO: Implement this function!
- return(0);		// <--- Should return the value of the logistic function on the input 
+ 
+ return input > 0 ? input : 0;
 }
