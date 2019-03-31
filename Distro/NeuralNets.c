@@ -61,9 +61,11 @@ int train_1layer_net(double sample[INPUTS],int label,double (*sigmoid)(double in
   *          You will need to complete feedforward_1layer(), backprop_1layer(), and logistic() in order to
   *          be able to complete this function.
   ***********************************************************************************************************/
+  double activations[OUTPUTS];
+  feedforward_1layer(sample, sigmoid, weights_io, activations);
+  backprop_1layer(sample, activations, sigmoid, label, weights_io);
 
-  
-  return(0);		// <--- This should return the class for this sample
+  return classify_1layer(sample, label, sigmoid, weights_io);		// <--- This should return the class for this sample
 }
 
 int classify_1layer(double sample[INPUTS],int label,double (*sigmoid)(double input), double weights_io[INPUTS][OUTPUTS])
@@ -95,14 +97,14 @@ int classify_1layer(double sample[INPUTS],int label,double (*sigmoid)(double inp
   ***********************************************************************************************************/
   // calculate the output
   double activations[OUTPUTS];
-  feedforward_1layer(sample, *sigmoid, weights_io, *activations);
+  feedforward_1layer(sample, sigmoid, weights_io, activations);
   
   // find the maximum node
   double max = activations[0];
   double maxIndex = 0;
-  for(int i = 1; i < output; i++){
-    if (activation[i] > max){
-      max = activation[i];
+  for(int i = 1; i < OUTPUTS; i++){
+    if (activations[i] > max){
+      max = activations[i];
       maxIndex = i;
     }
   }
@@ -137,12 +139,12 @@ void feedforward_1layer(double sample[INPUTS], double (*sigmoid)(double input), 
   
   for(int o = 0; o < OUTPUTS; o++){
     for (int i = 0; i < INPUTS -1; i++){
-      activations[o] += weight[i][o] * sample[i];
+      activations[o] += weights_io[i][o] * sample[i];
     }
     
     // WARNING no SIGMOID_SCALE used
-    activation[o] += sample[INPUTS -1];
-    activation[o] = sigmoid(activation[o]);
+    activations[o] += sample[INPUTS -1];
+    activations[o] = sigmoid(activations[o] * SIGMOID_SCALE);
   }
   
 }
@@ -176,7 +178,7 @@ void backprop_1layer(double sample[INPUTS], double activations[OUTPUTS], double 
     *        the network. You will need to find a way to figure out which sigmoid function you're
     *        using. Then use the procedure discussed in lecture to compute weight updates.
     * ************************************************************************************************/
-   
+   // waiting for the math part
 }
 
 int train_2layer_net(double sample[INPUTS],int label,double (*sigmoid)(double input), int units, double weights_ih[INPUTS][MAX_HIDDEN], double weights_ho[MAX_HIDDEN][OUTPUTS])
@@ -214,7 +216,13 @@ int train_2layer_net(double sample[INPUTS],int label,double (*sigmoid)(double in
   *          be able to complete this function.
   ***********************************************************************************************************/
   
-  return(0);		// <--- Should return the class for this sample  
+  double activations[OUTPUTS];
+  double h_activations[units];
+  
+  feedforward_2layer (sample, sigmoid, weights_ih, weights_ho, h_activations, activations, units);
+  backprop_2layer(sample, h_activations, activations, sigmoid, label, weights_ih, weights_ho, units);
+
+  return classify_2layer(sample, label, sigmoid, units, weights_ih, weights_ho);;		// <--- Should return the class for this sample  
 }
 
 int classify_2layer(double sample[INPUTS],int label,double (*sigmoid)(double input), int units, double weights_ih[INPUTS][MAX_HIDDEN], double weights_ho[MAX_HIDDEN][OUTPUTS])
@@ -247,8 +255,24 @@ int classify_2layer(double sample[INPUTS],int label,double (*sigmoid)(double inp
   *          You will need to complete feedforward_2layer(), and logistic() in order to
   *          be able to complete this function.
   ***********************************************************************************************************/
-
-  return(0);		// <--- Should return the class for this sample  
+  // calculate the output
+  double activations[OUTPUTS];
+  double h_activations[units];
+  feedforward_2layer (sample, sigmoid, weights_ih, weights_ho, h_activations, activations, units);
+  
+  // find the maximum node
+  double max = activations[0];
+  double maxIndex = 0;
+  
+  
+  for(int i = 1; i < OUTPUTS; i++){
+    if (activations[i] > max){
+      max = activations[i];
+      maxIndex = i;
+    }
+  }
+  
+  return maxIndex;		// <--- Should return the class for this sample  
 }
 
 
@@ -285,7 +309,29 @@ void feedforward_2layer(double sample[INPUTS], double (*sigmoid)(double input), 
    *                  the scaling factor has to be adjusted by the factor
    *                  SIGMOID_SCALE*(MAX_HIDDEN/units).
    **************************************************************************************************/
+  double temp;
+  int i, j;
   
+  
+  //calculate the only layer of hidden layer
+  for (i = 0; i < units; i++){ 
+    temp = 0;
+    for (j = 0; j < INPUTS; j++){
+      temp += sample[j] * weights_ih[j][i];
+    }
+    h_activations[i] = sigmoid(temp * SIGMOID_SCALE);
+  }
+
+
+  // calculate the final output layer
+  for (i = 0; i < OUTPUTS; i++){
+    temp = 0;
+    for (j = 0; j < units; j++){
+      temp += h_activations[j] * weights_ho[j][i];
+    }
+    // do what paco says
+    activations[i] = sigmoid(temp * SIGMOID_SCALE * (MAX_HIDDEN / units));
+  }
 }
 
 void backprop_2layer(double sample[INPUTS],double h_activations[MAX_HIDDEN], double activations[OUTPUTS], double (*sigmoid)(double input), int label, double weights_ih[INPUTS][MAX_HIDDEN], double weights_ho[MAX_HIDDEN][OUTPUTS], int units)
@@ -326,6 +372,5 @@ void backprop_2layer(double sample[INPUTS],double h_activations[MAX_HIDDEN], dou
 
 double logistic(double input)
 {
- 
- return input > 0 ? input : 0;
+ return 1.0/(1.0 + exp(-1*input));
 }
