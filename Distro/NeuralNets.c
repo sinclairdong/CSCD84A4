@@ -386,7 +386,7 @@ void backprop_2layer(double sample[INPUTS],double h_activations[MAX_HIDDEN], dou
     *        using. Then use the procedure discussed in lecture to compute weight updates.
     * ************************************************************************************************/
        double error, target[OUTPUTS];
-    double original_weights[MAX_HIDDEN][OUTPUTS];
+    double original_weights[units][OUTPUTS];
 
     for (int i = 0; i < OUTPUTS; i++) {
      if (logistic == sigmoid) { // if its the logistic function
@@ -397,23 +397,22 @@ void backprop_2layer(double sample[INPUTS],double h_activations[MAX_HIDDEN], dou
     }
    
     for (int i = 0; i < OUTPUTS; i++) {
-      error = logistic == sigmoid ? (target[i] - activations[i]) * (activations[i] 
-              * (1 -activations[i])) : (target[i] - activations[i]) * (1.0 - activations[i] * activations[i]);
-      for (int j = 0; j < MAX_HIDDEN; j++){
+      error = logistic == sigmoid ? (target[i] - activations[i]) * (activations[i] * (1 -activations[i])) : (target[i] - activations[i]) * (1.0 - activations[i] * activations[i]);
+      for (int j = 0; j < units; j++){
         original_weights[j][i] = weights_ho[j][i];
         weights_ho[j][i] += (ALPHA * error * h_activations[j]);
       }
     }
     
     error = 0.0;
-    for (int i = 0; i < MAX_HIDDEN; i++)
+    for (int i = 0; i < units; i++)
     {  
        for (int j = 0; j < INPUTS; j++) 
        { 
           double derivative_calculation;
           for (int k = 0; k < OUTPUTS; k++) 
           {
-            derivative_calculation = logistic == sigmoid ? (activations[k] * (1 - activations[k])) : (1.0 - activations[k] * activations[k]);
+            derivative_calculation = logistic == sigmoid ? (activations[k] * (1 - activations[k])) * (target[k] - activations[k]): (1.0 - activations[k] * activations[k]) * (target[k] - activations[k]);
             error += derivative_calculation * original_weights[i][k];
           }
           
