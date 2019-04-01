@@ -13,15 +13,15 @@ ________________________________________________
 Student Name 1 (last, first):Dong Yuesen
 
 
-Student Name 2 (last, first):
+Student Name 2 (last, first):Rishabh Sharma
 
 Student number 1: 1002387632  
 
-Student number 2:
+Student number 2: 1002390879
 
 UTORid 1:dongyues
 
-UTORid 2:
+UTORid 2: sharm711
 
 READ THIS AND SIGN YOUR NAME AT THE END:
 
@@ -29,7 +29,7 @@ READ THIS AND SIGN YOUR NAME AT THE END:
 honesty and plaguarism. All work submitted as part
 of this assignment is my own.
 
-    Signed: _dong yuesen__      _(student 2 name)_
+    Signed: _dong yuesen__      _sharma rishabh_
 
 
 (-5 marks for failing to provide the identifying
@@ -44,16 +44,23 @@ but explain carefully when needed.
 
 	       Copy/paste the reported classification rates for:
 	 	
-	       Training data (last training round):
+	       Training data (last training round): 0.837138
 
-	       Testing data:
+	       Testing data: 0.850723
 
 2 .- (1 marks) Repeat the process using the hyperbolic tangent activation
 	       function.
+	       
+	       Training data (last training round): 0.881778
 
+	       Testing data:0.884663
 
 3 .- (1 marks) Which type of activation function yielded the best classification
 	       results? which one learned faster?
+	       
+	       tanh have better final result also learn the fastet.
+	       after first 5000 iteration the sigmoid only get 35% correct rate where tanh got 70 percent twice as much
+	       
 
 4 .- (1 marks) Train a 2-layer network with hyperbolic-tangent activation, using
 	       150 hidden units. Report the classification rates on training and
