@@ -178,7 +178,39 @@ void backprop_1layer(double sample[INPUTS], double activations[OUTPUTS], double 
     *        the network. You will need to find a way to figure out which sigmoid function you're
     *        using. Then use the procedure discussed in lecture to compute weight updates.
     * ************************************************************************************************/
-   // waiting for the math part
+   // waiting for the math part  
+
+   int isSigmoid = (sigmoid(0) == 0.5);
+   int errors[OUTPUTS];
+   int i;
+   int max = isSigmoid ? 0.8 : 0.6;
+   int min = isSigmoid ? 0.2 : -0.6;
+   
+   for(i = 0; i < OUTPUTS; i++)
+   {
+       if(i == label) 
+       {
+  	      errors[i] = (max - activations[i]) * (max - activations[i]);
+       }
+       errors[i] = (min - activations[i]) * (min - activations[i]);    
+   }
+   
+   int j;
+   for(j = 0; j < OUTPUTS; i++)
+   { 
+      int k; 
+      for(k = 0; k < INPUTS; k++)
+      {
+          if(isSigmoid)
+          {
+            weights_io[k][j] += ALPHA * sample[i] * errors[j] * activations[j] * (1 - activations[j]); 
+          }
+          else
+          {
+            weights_io[k][j] += ALPHA * sample[i] * errors[j] * (1 - (activations[j] * activations[j])); 
+          }
+      }
+   } 
 }
 
 int train_2layer_net(double sample[INPUTS],int label,double (*sigmoid)(double input), int units, double weights_ih[INPUTS][MAX_HIDDEN], double weights_ho[MAX_HIDDEN][OUTPUTS])
