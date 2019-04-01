@@ -385,6 +385,44 @@ void backprop_2layer(double sample[INPUTS],double h_activations[MAX_HIDDEN], dou
     *        the network. You will need to find a way to figure out which sigmoid function you're
     *        using. Then use the procedure discussed in lecture to compute weight updates.
     * ************************************************************************************************/
+       double error, target[OUTPUTS];
+    double original_weights[MAX_HIDDEN][OUTPUTS];
+
+    for (int i = 0; i < OUTPUTS; i++) {
+     if (logistic == sigmoid) { // if its the logistic function
+       target[i] = i == label ? 0.8 : 0.2;
+     } else {
+       target[i] = i == label ? 0.6 : -0.6;
+     }
+    }
+   
+    for (int i = 0; i < OUTPUTS; i++) {
+      error = logistic == sigmoid ? (target[i] - activations[i]) * (activations[i] 
+              * (1 -activations[i])) : (target[i] - activations[i]) * (1.0 - activations[i] * activations[i]);
+      for (int j = 0; j < MAX_HIDDEN; j++){
+        original_weights[j][i] = weights_ho[j][i];
+        weights_ho[j][i] += (ALPHA * error * h_activations[j]);
+      }
+    }
+    
+    error = 0.0;
+    for (int i = 0; i < MAX_HIDDEN; i++)
+    {  
+       for (int j = 0; j < INPUTS; j++) 
+       { 
+          double derivative_calculation;
+          for (int k = 0; k < OUTPUTS; k++) 
+          {
+            derivative_calculation = logistic == sigmoid ? (activations[k] * (1 - activations[k])) : (1.0 - activations[k] * activations[k]);
+            error += derivative_calculation * original_weights[i][k];
+          }
+          
+          error *= logistic == sigmoid ? (h_activations[i] * (1 - h_activations[i])) : (1.0 - h_activations[i] * h_activations[i]);
+           
+          weights_ih[j][i] += (ALPHA * error * sample[j]);
+    
+       }
+    }
    
 }
 
