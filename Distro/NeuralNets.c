@@ -138,6 +138,7 @@ void feedforward_1layer(double sample[INPUTS], double (*sigmoid)(double input), 
    ******************************************************************************************************/
   
   for(int o = 0; o < OUTPUTS; o++){
+    activations[o] = 0;
     for (int i = 0; i < INPUTS -1; i++){
       activations[o] += weights_io[i][o] * sample[i];
     }
@@ -179,38 +180,21 @@ void backprop_1layer(double sample[INPUTS], double activations[OUTPUTS], double 
     *        using. Then use the procedure discussed in lecture to compute weight updates.
     * ************************************************************************************************/
    // waiting for the math part  
+   double error, target[OUTPUTS];
 
-   int isSigmoid = (sigmoid(0) == 0.5);
-   int errors[OUTPUTS];
-   int i;
-   int max = isSigmoid ? 0.8 : 0.6;
-   int min = isSigmoid ? 0.2 : -0.6;
+  for (int i = 0; i < OUTPUTS; i++) {
+    if (logistic == sigmoid) { // if its the logistic function
+      target[i] = i == label ? 0.8 : 0.2;
+    } else {
+      target[i] = i == label ? 0.6 : -0.6;
+    }
+  }
    
-   for(i = 0; i < OUTPUTS; i++)
-   {
-       if(i == label) 
-       {
-  	      errors[i] = (max - activations[i]) * (max - activations[i]);
-       }
-       errors[i] = (min - activations[i]) * (min - activations[i]);    
-   }
-   
-   int j;
-   for(j = 0; j < OUTPUTS; i++)
-   { 
-      int k; 
-      for(k = 0; k < INPUTS; k++)
-      {
-          if(isSigmoid)
-          {
-            weights_io[k][j] += ALPHA * sample[i] * errors[j] * activations[j] * (1 - activations[j]); 
-          }
-          else
-          {
-            weights_io[k][j] += ALPHA * sample[i] * errors[j] * (1 - (activations[j] * activations[j])); 
-          }
-      }
-   } 
+   for (int i = 0; i < OUTPUTS; i++) {
+    error = logistic == sigmoid ? (target[i] - activations[i]) * (activations[i] * (1 - activations[i])) : (target[i] - activations[i]) * (1.0 - activations[i]*activations[i]);
+    for (int j = 0; j < INPUTS; j++)
+      weights_io[j][i] += (ALPHA * error * sample[j]);
+  }
 }
 
 int train_2layer_net(double sample[INPUTS],int label,double (*sigmoid)(double input), int units, double weights_ih[INPUTS][MAX_HIDDEN], double weights_ho[MAX_HIDDEN][OUTPUTS])
