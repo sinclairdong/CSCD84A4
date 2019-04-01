@@ -39,8 +39,10 @@ ________________________________________________
 Answer the following questions. Be concise and clear
 but explain carefully when needed.
 
+NOTE: all are trained with 50 rounds
+
 1 .- (1 marks) Train a 1-layer network using the Logistic activation
-               function. 
+               function. (
 
 	       Copy/paste the reported classification rates for:
 	 	
@@ -66,34 +68,62 @@ but explain carefully when needed.
 	       150 hidden units. Report the classification rates on training and
 	       testing data just as for 1) and 2).	       
 	       
+	       Training data (last training round): 0.847840
+
+	       Testing data: 0.858443
+	       
 5 .- (1 marks) Same as 4), except use 10 hidden units instead
 
+	       Training data (last training round): 0.835273
+	       
+	       Testing data: 0.839038
+
 6 .- (1 marks) Same as 5), except use 3 hidden units instead
+
+	       Training data (last training round): 0.390826
+
+	       Testing data: 0.386937
 
 7 .- (4 marks) Comment on the experiments in 4, 5, and 6, and give your conclusion
 	       regarding the effect of the number of hidden units on classification
 	       accuracy. 
 
+         3 is really terrible for the reason below.
+         10 and 150 hidden nerons are not making significant difference. It only differes by 2%.
+         Increasing the number of node on a single layer will significant increase training time with only minor improvement.
+         
 	       What is the network with 3 hidden telling you about this classification
 	       problem?
+	       
+	       with only 3 hidden node we don't have eough pattarn (we only have 2^3 = 8 overall) for the classifire to classify.
+	       
+	       That is why the rate is super low.
 
 8 .- (5 marks) Train the best performing network you can. Use any activation function
 	       you wish, and set the number of hidden units so as to achieve the best
 	       performance.
 
-	       Number of hidden units used:
+	       Number of hidden units used: 150
 
-	       Classification rate on testing data:
+	       Classification rate on testing data: 0.858443
 
 9 .- (5 marks) Describe how you would build a network to play the cat
 	        and mouse game (move the mouse to help it survive).
 
 		- Describe what the input is in terms of a vector of
 		  values
+		      each cell of maze will be a input node. 
+		         empty here the value will be 0
+		         mouse there will be 1
+		         chese will be 0.75
+		         cat there will be 0.25
 		- Describe what the output layer looks like (how many
 		  neurons and what they encode)
+		      4 output as the mouse suppose to move up left down right
 		- Describe the error function
+		      We will use some feature to evaluate current states
 		- How many layers should you use?
+		      4 - 5
 _____________________________________________________
 
 Mark with an 'x' where appropriate. If something is only
@@ -102,23 +132,23 @@ doesn't work, or what problems exist.
 	
         	Complete/Working	Partial		Not done
 
-Logistic
+Logistic         X
  activation
  
 Tanh
- activation
+ activation    X
 
-1L Feed-forward  
+1L Feed-forward  X
 
-1L Backprop
+1L Backprop    X
 
-1L Classify
+1L Classify     X
 
-2L Feed-forward
+2L Feed-forward  X
 
-2L Backprop
+2L Backprop    X
 
-2L Classify
+2L Classify    X
 _____________________________________________________
 
 Marking:
