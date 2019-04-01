@@ -316,9 +316,10 @@ void feedforward_2layer(double sample[INPUTS], double (*sigmoid)(double input), 
   //calculate the only layer of hidden layer
   for (i = 0; i < units; i++){ 
     temp = 0;
-    for (j = 0; j < INPUTS; j++){
+    for (j = 0; j < INPUTS - 1; j++){
       temp += sample[j] * weights_ih[j][i];
     }
+    temp += sample[INPUTS];
     h_activations[i] = sigmoid(temp * SIGMOID_SCALE);
   }
 
@@ -329,6 +330,7 @@ void feedforward_2layer(double sample[INPUTS], double (*sigmoid)(double input), 
     for (j = 0; j < units; j++){
       temp += h_activations[j] * weights_ho[j][i];
     }
+    temp += sample[INPUTS];
     // do what paco says
     activations[i] = sigmoid(temp * SIGMOID_SCALE * (MAX_HIDDEN / units));
   }
